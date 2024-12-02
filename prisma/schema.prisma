@@ -1,0 +1,83 @@
+
+generator client {
+provider = "prisma-client-js"
+}
+
+datasource db {
+provider = "mysql"
+url      = env("DATABASE_URL")
+}
+
+// Modelo Users
+model User {
+  id         Int      @id @default(autoincrement())
+  name       String
+  email      String   @unique
+  password   String
+  role       String
+  created_at DateTime @default(now())
+
+  // Relacionamentos
+  courses    Course[] @relation("InstructorCourses")
+  progress   Progress[]
+  certificates Certificate[]
+}
+
+// Modelo Courses
+model Course {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  created_at  DateTime @default(now())
+
+  // Relacionamento com User (Instrutor)
+  instructor  User     @relation("InstructorCourses", fields: [instructor_id], references: [id])
+  instructor_id Int
+
+  // Relacionamento com Lessons e Progress
+  lessons     Lesson[]
+  progress    Progress[]
+  certificates Certificate[]
+}
+
+// Modelo Lessons
+model Lesson {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  video_url   String
+  created_at  DateTime @default(now())
+
+  // Relacionamento com Courses
+  course      Course   @relation(fields: [course_id], references: [id])
+  course_id   Int
+}
+
+// Modelo Progress
+model Progress {
+  id                   Int      @id @default(autoincrement())
+  completion_percentage Float
+  updated_at           DateTime @default(now())
+
+  // Relacionamento com User (Estudante) e Course
+  student   User   @relation(fields: [student_id], references: [id])
+  student_id Int
+
+  course    Course @relation(fields: [course_id], references: [id])
+  course_id Int
+}
+
+// Modelo Certificates
+model Certificate {
+  id            Int      @id @default(autoincrement())
+  certificate_url String
+  generated_at  DateTime @default(now())
+
+  // Relacionamento com User (Estudante) e Course
+  student   User   @relation(fields: [student_id], references: [id])
+  student_id Int
+
+  course    Course @relation(fields: [course_id], references: [id])
+  course_id Int
+}
+
