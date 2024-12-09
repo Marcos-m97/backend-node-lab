@@ -10,7 +10,7 @@ url      = env("DATABASE_URL")
 
 // Modelo Users
 model User {
-  id         Int      @id @default(autoincrement())
+  id         String   @id @default(uuid())
   name       String
   email      String   @unique
   password   String
@@ -32,7 +32,7 @@ model Course {
 
   // Relacionamento com User (Instrutor)
   instructor  User     @relation("InstructorCourses", fields: [instructor_id], references: [id])
-  instructor_id Int
+  instructor_id String
 
   // Relacionamento com Lessons e Progress
   lessons     Lesson[]
@@ -61,7 +61,7 @@ model Progress {
 
   // Relacionamento com User (Estudante) e Course
   student   User   @relation(fields: [student_id], references: [id])
-  student_id Int
+  student_id String
 
   course    Course @relation(fields: [course_id], references: [id])
   course_id Int
@@ -75,7 +75,7 @@ model Certificate {
 
   // Relacionamento com User (Estudante) e Course
   student   User   @relation(fields: [student_id], references: [id])
-  student_id Int
+  student_id String
 
   course    Course @relation(fields: [course_id], references: [id])
   course_id Int
