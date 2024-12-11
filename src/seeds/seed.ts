@@ -1,13 +1,8 @@
 import prisma from "../config/prisma.js";
-import {
-  UserRole,
-  userCreation,
-} from "../definitions/user.definitions/User.Roles.js";
-import { AppErrors } from "../utils/errorHandler.js";
-
+import { AppErrors } from "../middlewares/errorHandler.js";
+import { UserRole, userCreation } from "../definitions/user.definitions.js";
 class Seed {
-  
-    //  cria o admin user se ele nao exisitr.
+  //  cria o admin user se ele nao exisitr.
   public async createAdminUser(): Promise<void> {
     if (!process.env.DEFAULT_EMAIL) {
       throw new AppErrors(
@@ -21,8 +16,6 @@ class Seed {
         where: { email: process.env.DEFAULT_EMAIL },
       });
 
-      
-
       if (!existingSeed) {
         const userSeed: userCreation = {
           name: process.env.DEFAULT_NAME!,
@@ -33,7 +26,7 @@ class Seed {
 
         await prisma.user.create({ data: userSeed });
         console.log("Admin user seed registered.");
-      } 
+      }
     } catch (error) {
       throw new AppErrors("Error while creating the admin user seed.", 404);
     }
